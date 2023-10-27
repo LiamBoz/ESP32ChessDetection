@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+#from utils.py import stackImages
 
 import requests
 
@@ -10,7 +11,7 @@ INFO SECTION
 '''
 
 # ESP32 URL
-URL = "http://192.168.137.248"
+URL = "http://192.168.137.176"
 AWB = True
 
 # Face recognition and opencv setup
@@ -51,6 +52,7 @@ if __name__ == '__main__':
         if cap.isOpened():
             ret, frame = cap.read()
 
+            #imageArray = ([])
             cv2.imshow("frame", frame)
 
             key = cv2.waitKey(1)
