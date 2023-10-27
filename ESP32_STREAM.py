@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-#from utils.py import stackImages
+from utils import preProcess
 
 import requests
 
@@ -11,12 +11,14 @@ INFO SECTION
 '''
 
 # ESP32 URL
-URL = "http://192.168.137.176"
+URL = "http://192.168.137.123"
 AWB = True
 
 # Face recognition and opencv setup
-cap = cv2.VideoCapture(URL + ":81/stream")
-face_classifier = cv2.CascadeClassifier('haarcascade_frontalface_alt.xml') # insert the full path to haarcascade file if you encounter any problem
+
+#ONLY UNCOMMENT THIS IF USING THE ESP32
+#cap = cv2.VideoCapture(URL + ":81/stream")
+cap = cv2.VideoCapture(0)
 
 def set_resolution(url: str, index: int=1, verbose: bool=False):
     try:
@@ -47,13 +49,16 @@ def set_awb(url: str, awb: int=1):
     return awb
 
 if __name__ == '__main__':
-    set_resolution(URL, index=8)
+    # SHOULD ONLY BE UNCOMMENTED IF USING ESP32
+    #set_resolution(URL, index=8)
     while True:
         if cap.isOpened():
             ret, frame = cap.read()
 
-            #imageArray = ([])
+            frameThreshhold = preProcess(frame)
+
             cv2.imshow("frame", frame)
+            cv2.imshow("secondframe", frameThreshhold)
 
             key = cv2.waitKey(1)
 
