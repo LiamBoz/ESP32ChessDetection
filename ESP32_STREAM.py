@@ -55,10 +55,24 @@ if __name__ == '__main__':
         if cap.isOpened():
             ret, frame = cap.read()
 
-            frameThreshhold = preProcess(frame)
+            imgThreshold = preProcess(frame)
+
+            imgContours = imgThreshold.copy() # COPY IMAGE FOR DISPLAY PURPOSES
+            imgBigContour = imgThreshold.copy() # COPY IMAGE FOR DISPLAY PURPOSES
+            contours, hierarchy = cv2.findContours(imgThreshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE) # FIND ALL CONTOURS
+            cv2.drawContours(imgContours, contours, -1, (0, 255, 0), 3) # DRAW ALL DETECTED CONTOURS
+
+    
+
+            #ret, corners = cv2.findChessboardCorners(imgThreshhold, (6,6),None)
+
+            #cv2.drawChessboardCorners(imgThreshhold, (6,6),corners,ret)
+            #cv2.imshow("secondframe", imgThreshhold)
+
 
             cv2.imshow("frame", frame)
-            cv2.imshow("secondframe", frameThreshhold)
+            cv2.imshow("contours", imgContours)
+            #cv2.imshow("secondframe", frame)
 
             key = cv2.waitKey(1)
 
