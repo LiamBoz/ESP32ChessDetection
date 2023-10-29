@@ -11,14 +11,13 @@ INFO SECTION
 '''
 
 # ESP32 URL
-URL = "http://192.168.137.123"
+URL = "http://192.168.137.134"
 AWB = True
 
 # Face recognition and opencv setup
 
 #ONLY UNCOMMENT THIS IF USING THE ESP32
-#cap = cv2.VideoCapture(URL + ":81/stream")
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(URL + ":81/stream")
 
 def set_resolution(url: str, index: int=1, verbose: bool=False):
     try:
@@ -50,7 +49,7 @@ def set_awb(url: str, awb: int=1):
 
 if __name__ == '__main__':
     # SHOULD ONLY BE UNCOMMENTED IF USING ESP32
-    #set_resolution(URL, index=8)
+    set_resolution(URL, index=8)
     while True:
         if cap.isOpened():
             ret, frame = cap.read()
@@ -64,10 +63,10 @@ if __name__ == '__main__':
 
     
 
-            #ret, corners = cv2.findChessboardCorners(imgThreshhold, (6,6),None)
+            ret, corners = cv2.findChessboardCorners(imgThreshold, (4,4),None)
 
-            #cv2.drawChessboardCorners(imgThreshhold, (6,6),corners,ret)
-            #cv2.imshow("secondframe", imgThreshhold)
+            cv2.drawChessboardCorners(imgThreshold, (4,4),corners,ret)
+            cv2.imshow("secondframe", imgThreshold)
 
 
             cv2.imshow("frame", frame)
