@@ -3,9 +3,9 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 
-const char* ssid = "worldhq";
-const char* password = "iwillforeverbetheboss";   
-const char* hostname = "esp32-left";
+const char* ssid = "MeWhenISeeThatGyat";
+const char* password = "phatnuts";   
+const char* hostname = "esp32-shoe";
 
 const int vibrate = 10;
 
@@ -34,7 +34,7 @@ void loop()
                         client.println("HTTP/1.1 200 OK");
                         client.println("Content-type:text/html");
                         client.println();
-                        client.println("row and column received from esp32-left");
+                        client.println("row and column received from esp32-shoe");
                         
                          // Read data from the request
                         String sensor_data;
