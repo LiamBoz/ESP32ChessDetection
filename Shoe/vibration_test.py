@@ -1,6 +1,6 @@
 import requests
 
-esp32_hostname = "esp32-left.local"  # Replace with your actual mDNS hostname
+esp32_hostname = "esp32-shoe.local"  # Replace with your actual mDNS hostname
 url = f"http://{esp32_hostname}/endpoint"  # Define the URL of your ESP32 endpoint
 
 while True:
