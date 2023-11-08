@@ -1,0 +1,64 @@
+import chess
+import chess.svg
+import chess.engine
+import time
+
+def print_board(board):
+    print("  a b c d e f g h")
+    print(" +----------------")
+    for i in range(7, -1, -1):  # Iterate in reverse order (from 7 to 0)
+        print(f"{i+1}|", end=" ")  # Add 1 to i to display rows as 1-indexed
+        for j in range(8):
+            piece = board.piece_at(8*i+j)
+            if piece is not None:
+                print(piece.symbol(), end=" ")
+            else:
+                print(".", end=" ")
+        print("|")
+
+def main():
+    color = input("Choose your color (w for white, b for black): ")
+    if color.lower() not in ('w', 'b'):
+        print("Invalid choice. Please enter 'w' for white or 'b' for black.")
+        return
+
+    board = chess.Board()
+
+    if color.lower() == 'b':
+        board = board.mirror()
+
+    while not board.is_game_over():
+        print_board(board)  # Display the board with rows and columns
+        legal_moves = [move for move in board.legal_moves]
+
+        if board.turn == chess.WHITE and color.lower() == 'w':
+            move_start_time = time.time()  # Record start time
+            move = input("Enter your move (e.g., e2e4): ")
+            if chess.Move.from_uci(move) not in legal_moves:
+                print("Invalid move! Try again.")
+                continue
+            move_end_time = time.time()  # Record end time
+            print(f"You took {move_end_time - move_start_time:.2f} seconds to make your move.")
+        elif board.turn == chess.BLACK and color.lower() == 'b':
+            move_start_time = time.time()  # Record start time
+            move = input("Enter your move (e.g., e2e4): ")
+            if chess.Move.from_uci(move) not in legal_moves:
+                print("Invalid move! Try again.")
+                continue
+            move_end_time = time.time()  # Record end time
+            print(f"You took {move_end_time - move_start_time:.2f} seconds to make your move.")
+        else:
+            with chess.engine.SimpleEngine.popen_uci("C:\\Users\\cayde\\Desktop\\Shit\\stockfish\\stockfish-windows-x86-64-avx2.exe") as engine:
+                engine_start_time = time.time()  # Record start time
+                result = engine.play(board, chess.engine.Limit(time=2))
+                move = result.move.uci()
+                engine_end_time = time.time()  # Record end time
+                print(f"Stockfish plays: {move}")
+                print(f"Stockfish took {engine_end_time - engine_start_time:.2f} seconds to make its move.")
+
+        board.push_uci(move)
+
+    print(f"Game over: {board.result()}")
+
+if __name__ == "__main__":
+    main()
