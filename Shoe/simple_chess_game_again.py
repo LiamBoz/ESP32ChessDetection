@@ -20,12 +20,13 @@ def get_engine_move(board, engine_path):
     # Function to get the engine's recommended move
     with chess.engine.SimpleEngine.popen_uci(engine_path) as engine:
         result = engine.play(board, chess.engine.Limit(time=0.1))
+        print(result.move)
+        #print(board.piece_at(square))
         return result.move
 
 def main():
-
     
-    engine_path = "C://Users//thisa//Downloads//stockfish-windows-x86-64-avx2//stockfish//stockfish-windows-x86-64-avx2.exe"  # Update this path with the correct engine path
+    engine_path = "C://Users//durpy//Downloads//stockfish-windows-x86-64-avx2//stockfish//stockfish-windows-x86-64-avx2.exe"  # Update this path with the correct engine path
     board = chess.Board()
 
     color = input("Choose your color (w for white, b for black): ")
@@ -51,6 +52,10 @@ def main():
         # Engine recommends a move
         if not board.is_game_over():
             engine_move = get_engine_move(board, engine_path)
+            square = engine_move.uci()[:2]    
+            PIECE = str(board.piece_at(chess.parse_square(square)))
+            MOVE = PIECE+engine_move.uci()[-2:]
+            print(MOVE)
             print(f"Engine recommends: {engine_move.uci()}")
             #board.push(engine_move)  # Make the engine's move on the board
 

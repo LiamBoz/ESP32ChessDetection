@@ -1,5 +1,6 @@
 import asyncio
 from bleak import BleakClient
+from simple_chess_game_again import *
 
 # Define the UUIDs
 SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
@@ -9,8 +10,10 @@ async def send_data(client, data):
     await client.write_gatt_char(CHARACTERISTIC_UUID, data)
 
 async def main():
-    # old mac address: D4:F9:8D:04:17:46
-    address = "D4:F9:8D:01:48:2A"
+    # old mac address
+    address = "D4:F9:8D:04:17:46"
+    # new mac address
+    # address = "D4:F9:8D:01:48:2A"
     
     async with BleakClient(address) as client:
         while True:
