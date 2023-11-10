@@ -26,6 +26,18 @@ def main():
 
     if color.lower() == 'b':
         board = board.mirror()
+        first_move = True
+
+    #if first_move == True:
+        #with chess.engine.SimpleEngine.popen_uci("C://Users//thisa//Downloads//stockfish-windows-x86-64-avx2//stockfish//stockfish-windows-x86-64-avx2.exe") as engine:
+                #engine_start_time = time.time()  # Record start time
+                #result = engine.play(board, chess.engine.Limit(time=.1))
+                #move = result.move.uci()
+                #engine_end_time = time.time()  # Record end time
+                #print(f"Stockfish plays: {move}")
+                #print(f"Stockfish took {engine_end_time - engine_start_time:.2f} seconds to make its move.")
+        #board.push_uci(move)
+        #first_move == False
 
     while not board.is_game_over():
         print_board(board)  # Display the board with rows and columns
@@ -48,9 +60,9 @@ def main():
             move_end_time = time.time()  # Record end time
             print(f"You took {move_end_time - move_start_time:.2f} seconds to make your move.")
         else:
-            with chess.engine.SimpleEngine.popen_uci("C:\\Users\\cayde\\Desktop\\Shit\\stockfish\\stockfish-windows-x86-64-avx2.exe") as engine:
+            with chess.engine.SimpleEngine.popen_uci("C://Users//thisa//Downloads//stockfish-windows-x86-64-avx2//stockfish//stockfish-windows-x86-64-avx2.exe") as engine:
                 engine_start_time = time.time()  # Record start time
-                result = engine.play(board, chess.engine.Limit(time=2))
+                result = engine.play(board, chess.engine.Limit(time=.1))
                 move = result.move.uci()
                 engine_end_time = time.time()  # Record end time
                 print(f"Stockfish plays: {move}")
