@@ -60,7 +60,7 @@ def main():
             move_end_time = time.time()  # Record end time
             print(f"You took {move_end_time - move_start_time:.2f} seconds to make your move.")
         else:
-            with chess.engine.SimpleEngine.popen_uci("C://Users//thisa//Downloads//stockfish-windows-x86-64-avx2//stockfish//stockfish-windows-x86-64-avx2.exe") as engine:
+            with chess.engine.SimpleEngine.popen_uci("C:\\Users\\cayde\\Desktop\\Shit\\stockfish\\stockfish-windows-x86-64-avx2.exe") as engine:
                 engine_start_time = time.time()  # Record start time
                 result = engine.play(board, chess.engine.Limit(time=.1))
                 move = result.move.uci()

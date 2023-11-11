@@ -7,6 +7,9 @@ import chess.engine
 SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
+dict = {'p':1,'P':1,'n':2,'N':2,'b':3,'B':3,'r':4,'R':4,'Q':5,'q':5,'k':6,'K':6}
+dict2 = {'a':'1','b':'2','c':'3','d':'4','e':'5','f':'6','g':'7','h':'8'}
+
 
 def print_board(board):
     # Function to print the board in a readable format
@@ -42,7 +45,7 @@ async def main():
     async with BleakClient(address) as client:
         while True:
 
-            engine_path = "C://Users//durpy//Downloads//stockfish-windows-x86-64-avx2//stockfish//stockfish-windows-x86-64-avx2.exe"  # Update this path with the correct engine path
+            engine_path = "C:\\Users\\cayde\\Desktop\\Shit\\stockfish\\stockfish-windows-x86-64-avx2.exe"  # Update this path with the correct engine path
             board = chess.Board()
 
             color = input("Choose your color (w for white, b for black): ")
@@ -50,32 +53,74 @@ async def main():
                 print("Invalid choice. Please enter 'w' for white or 'b' for black.")
                 return
             
+            first_move = False
+
             if color.lower() == 'b':
                 board = board.mirror()
                 first_move = True
 
             while not board.is_game_over():
-                print_board(board)  # Display the board with rows and columns
+                if first_move:
+                    print_board(board)  # Display the board with rows and columns
 
-                # User makes a move
-                move = input(f"Enter your move for {'white' if board.turn == chess.WHITE else 'black'} (e.g., e2e4): ")
-                try:
-                    board.push_uci(move)
-                except ValueError:
-                    print("Invalid move! Try again.")
-                    continue
+                    # User makes a move
+                    chess.WHITE = True
+                    board.turn = chess.WHITE
+                    move = input(f"Enter your move for {'white' if board.turn == chess.WHITE else 'black'} (e.g., e2e4): ")
+                    try:
+                        board.push_uci(move)
+                    except ValueError:
+                        print("Invalid move! Try again.")
+                        continue
 
-                # Engine recommends a move
-                if not board.is_game_over():
-                    engine_move = get_engine_move(board, engine_path)
-                    square = engine_move.uci()[:2]    
-                    PIECE = board.piece_at(chess.parse_square(square))
-                    print(f"Engine recommends: {engine_move.uci()}")
-                    #board.push(engine_move)  # Make the engine's move on the board
+                    # Engine recommends a move
+                    if not board.is_game_over():
+                        engine_move = get_engine_move(board, engine_path)
+                        square = engine_move.uci()[:2]   
 
-                data_to_send =  PIECE.encode('utf-8')
-                await send_data(client, data_to_send)
-                print(f"Sent: {PIECE}")
+                        PIECE = dict[str(board.piece_at(chess.parse_square(square)))]
+                        COLUMN = dict2[square[0]]
+                        ROW = str((square[1]))
+                        print(f"Engine recommends: {engine_move.uci()}")
+                        #board.push(engine_move)  # Make the engine's move on the board
+                        if not board.turn:
+                            MOVE = f"{PIECE}+{COLUMN}+{ROW}"
+                            data_to_send =  MOVE.encode('utf-8')
+                            await send_data(client, data_to_send)
+                            print(f"Sent: {MOVE}")
+                    first_move = False
+                else:
+                    print_board(board)  # Display the board with rows and columns
+                    move = input(f"Enter your move for {'white' if board.turn == chess.WHITE else 'black'} (e.g., e2e4): ")
+                    try:
+                        board.push_uci(move)
+                    except ValueError:
+                        print("Invalid move! Try again.")
+                        continue
+
+                    # Engine recommends a move
+                    if not board.is_game_over():
+                        engine_move = get_engine_move(board, engine_path)
+                        square = engine_move.uci()[:2]
+                        square2 = engine_move.uci()[-2:] 
+
+                        PIECE = dict[str(board.piece_at(chess.parse_square(square)))]
+                        COLUMN = dict2[square2[0]]
+                        ROW = str((square2[1]))
+                        print(f"Engine recommends: {engine_move.uci()}")
+                        #board.push(engine_move)  # Make the engine's move on the board
+                        print(board.turn)
+                        print(color.lower())
+                        if board.turn and color.lower() == 'w':
+                            MOVE = f"{PIECE}+{COLUMN}+{ROW}"
+                            data_to_send =  MOVE.encode('utf-8')
+                            await send_data(client, data_to_send)
+                            print(f"Sent: {MOVE}")
+                        elif (not board.turn) and color.lower() == 'b':
+                            MOVE = f"{PIECE}+{COLUMN}+{ROW}"
+                            data_to_send =  MOVE.encode('utf-8')
+                            await send_data(client, data_to_send)
+                            print(f"Sent: {MOVE}")
 
             print(f"Game over: {board.result()}")
 

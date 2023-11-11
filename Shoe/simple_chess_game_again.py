@@ -2,6 +2,9 @@ import chess
 import chess.engine
 import time
 
+
+dict = {'p':1,'P':1,'n':2,'N':2,'b':3,'B':3,'r':4,'R':4,'Q':5,'q':5,'k':6,'K':6}
+
 def print_board(board):
     # Function to print the board in a readable format
     print("  a b c d e f g h")
@@ -26,7 +29,7 @@ def get_engine_move(board, engine_path):
 
 def main():
     
-    engine_path = "C://Users//durpy//Downloads//stockfish-windows-x86-64-avx2//stockfish//stockfish-windows-x86-64-avx2.exe"  # Update this path with the correct engine path
+    engine_path = "C:\\Users\\cayde\\Desktop\\Shit\\stockfish\\stockfish-windows-x86-64-avx2.exe"  # Update this path with the correct engine path
     board = chess.Board()
 
     color = input("Choose your color (w for white, b for black): ")
@@ -53,10 +56,11 @@ def main():
         if not board.is_game_over():
             engine_move = get_engine_move(board, engine_path)
             square = engine_move.uci()[:2]    
-            PIECE = str(board.piece_at(chess.parse_square(square)))
-            MOVE = PIECE+engine_move.uci()[-2:]
-            print(MOVE)
+            #PIECE = str(board.piece_at(chess.parse_square(square)))
+            PIECE = dict[str(board.piece_at(chess.parse_square(square)))]
+            #MOVE = PIECE+engine_move.uci()[-2:]
             print(f"Engine recommends: {engine_move.uci()}")
+            print(board.turn)
             #board.push(engine_move)  # Make the engine's move on the board
 
     print(f"Game over: {board.result()}")
