@@ -14,6 +14,7 @@ async def main():
     address = "D4:F9:8D:04:17:46"
     # new mac address
     # address = "D4:F9:8D:01:48:2A"
+
     
     async with BleakClient(address) as client:
         while True:
