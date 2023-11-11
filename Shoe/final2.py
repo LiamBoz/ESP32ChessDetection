@@ -10,6 +10,8 @@ CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 dict = {'p':1,'P':1,'n':2,'N':2,'b':3,'B':3,'r':4,'R':4,'Q':5,'q':5,'k':6,'K':6}
 dict2 = {'a':'1','b':'2','c':'3','d':'4','e':'5','f':'6','g':'7','h':'8'}
 
+send_moves = False
+
 
 def print_board(board):
     # Function to print the board in a readable format
@@ -38,14 +40,14 @@ async def send_data(client, data):
 
 async def main():
     # old mac address
-    address = "D4:F9:8D:04:17:46"
+    #address = "D4:F9:8D:04:17:46"
     # new mac address
-    # address = "D4:F9:8D:01:48:2A"
+    address = "D4:F9:8D:01:48:2A"
     
     async with BleakClient(address) as client:
         while True:
 
-            engine_path = "C:\\Users\\cayde\\Desktop\\Shit\\stockfish\\stockfish-windows-x86-64-avx2.exe"  # Update this path with the correct engine path
+            engine_path = "C://Users//thisa//Downloads//stockfish-windows-x86-64-avx2//stockfish//stockfish-windows-x86-64-avx2.exe"  # Update this path with the correct engine path
             board = chess.Board()
 
             color = input("Choose your color (w for white, b for black): ")
@@ -60,6 +62,7 @@ async def main():
                 first_move = True
 
             while not board.is_game_over():
+                send_moves = False
                 if first_move:
                     print_board(board)  # Display the board with rows and columns
 
@@ -67,6 +70,11 @@ async def main():
                     chess.WHITE = True
                     board.turn = chess.WHITE
                     move = input(f"Enter your move for {'white' if board.turn == chess.WHITE else 'black'} (e.g., e2e4): ")
+
+                    if move.endswith("."):
+                        send_moves = True
+                        move = move.rstrip(".")
+                        
                     try:
                         board.push_uci(move)
                     except ValueError:
@@ -83,7 +91,7 @@ async def main():
                         ROW = str((square[1]))
                         print(f"Engine recommends: {engine_move.uci()}")
                         #board.push(engine_move)  # Make the engine's move on the board
-                        if not board.turn:
+                        if not board.turn and send_moves:
                             MOVE = f"{PIECE}+{COLUMN}+{ROW}"
                             data_to_send =  MOVE.encode('utf-8')
                             await send_data(client, data_to_send)
@@ -92,6 +100,10 @@ async def main():
                 else:
                     print_board(board)  # Display the board with rows and columns
                     move = input(f"Enter your move for {'white' if board.turn == chess.WHITE else 'black'} (e.g., e2e4): ")
+                    if move.endswith("."):
+                        send_moves = True
+                        move = move.rstrip(".")
+                    print(send_moves)
                     try:
                         board.push_uci(move)
                     except ValueError:
@@ -109,14 +121,12 @@ async def main():
                         ROW = str((square2[1]))
                         print(f"Engine recommends: {engine_move.uci()}")
                         #board.push(engine_move)  # Make the engine's move on the board
-                        print(board.turn)
-                        print(color.lower())
-                        if board.turn and color.lower() == 'w':
+                        if board.turn and color.lower() == 'w' and send_moves:
                             MOVE = f"{PIECE}+{COLUMN}+{ROW}"
                             data_to_send =  MOVE.encode('utf-8')
                             await send_data(client, data_to_send)
                             print(f"Sent: {MOVE}")
-                        elif (not board.turn) and color.lower() == 'b':
+                        elif (not board.turn) and color.lower() == 'b' and send_moves:
                             MOVE = f"{PIECE}+{COLUMN}+{ROW}"
                             data_to_send =  MOVE.encode('utf-8')
                             await send_data(client, data_to_send)
